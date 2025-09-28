@@ -1,4 +1,5 @@
 import argparse
+import copy
 import json
 from datetime import datetime
 from time import time
@@ -60,7 +61,7 @@ def train_model(config_path: str):
     MODEL_METRICS_ROOT = "metrics"
 
     model_filename_base = f"{MODEL_SAVE_ROOT}/{MODEL_NAME}_{run}"
-    metrics_filename_base = f"{MODEL_METRICS_ROOT}/{MODEL_NAME}"
+    metrics_filename_base = f"{MODEL_METRICS_ROOT}/{MODEL_NAME}_{run}"
     run_id = datetime.now().strftime("%m%d%H%M")
     model_save_path = f"{model_filename_base}_{run_id}"
 
@@ -79,7 +80,7 @@ def train_model(config_path: str):
         "val_loss": [],
         "val_accuracy": [],
     }
-    best_model_metrics = {}
+    best_model_metrics = copy.deepcopy(model_metrics)
 
     def _save_model_metrics(metrics, path: str):
         with open(path, "w") as f:
