@@ -8,3 +8,4 @@ training:
   patience: 5
   augmentation: True
   batch_norm: True
+  dropout: 0

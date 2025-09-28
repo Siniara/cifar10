@@ -31,6 +31,7 @@ def train_model(config_path: str):
     patience = config["training"]["patience"]
     augmentation = config["training"]["augmentation"]
     batch_norm = config["training"]["batch_norm"]
+    dropout = config["training"]["dropout"]
 
     # DATA LOADING
     NUM_WORKERS = 2  # 0 if run on jupyter else increase
@@ -53,7 +54,11 @@ def train_model(config_path: str):
 
     # TRAINING SET UP
     model = TinyVGG(
-        hidden_units=hidden_units, input_shape=3, output_shape=10, batch_norm=batch_norm
+        hidden_units=hidden_units,
+        input_shape=3,
+        output_shape=10,
+        batch_norm=batch_norm,
+        dropout=dropout,
     ).to(device)
     loss_fn = nn.CrossEntropyLoss(reduction="sum")
     opt = optim.Adam(params=model.parameters(), lr=learning_rate)
@@ -79,6 +84,7 @@ def train_model(config_path: str):
         "batch_size": batch_size,
         "augmentation": augmentation,
         "batch_norm": batch_norm,
+        "dropout": dropout,
         "train_loss": [],
         "train_accuracy": [],
         "val_loss": [],
