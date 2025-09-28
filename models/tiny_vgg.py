@@ -1,57 +1,33 @@
 from torch import nn
 
 
-# TODO: add regularisation
 class TinyVGG(nn.Module):
-    def __init__(self, hidden_units: int, input_shape: int, output_shape: int):
-        """TinyVGG model adapted from https://poloclub.github.io/cnn-explainer/.
-        Args:
-            hidden_units: Number of hidden units between layers.
-            input_shape: Number of channels in the input data. For example, 3 for RGB images, 1 for grayscale.
-            output_shape: Number of output classes.
-        """
+    def __init__(
+        self,
+        hidden_units: int,
+        input_shape: int,
+        output_shape: int,
+        batch_norm: bool = False,
+    ):
         super().__init__()
-        self.conv_block1 = nn.Sequential(
-            nn.Conv2d(
-                in_channels=input_shape,
-                out_channels=hidden_units,
-                kernel_size=(3, 3),
-                stride=1,
-                padding=1,
-            ),
-            nn.ReLU(),
-            nn.Conv2d(
-                in_channels=hidden_units,
-                out_channels=hidden_units,
-                kernel_size=(3, 3),
-                stride=1,
-                padding=1,
-            ),
-            nn.MaxPool2d(kernel_size=(2, 2), stride=2),
-        )
+        self.batch_norm = batch_norm
 
-        self.conv_block2 = nn.Sequential(
-            nn.Conv2d(
-                in_channels=hidden_units,
-                out_channels=hidden_units,
-                kernel_size=(3, 3),
-                stride=1,
-                padding=1,
-            ),
-            nn.ReLU(),
-            nn.Conv2d(
-                in_channels=hidden_units,
-                out_channels=hidden_units,
-                kernel_size=(3, 3),
-                stride=1,
-                padding=1,
-            ),
-            nn.MaxPool2d(kernel_size=(2, 2), stride=2),
-        )
+        def conv_block(in_ch, out_ch):
+            layers = [nn.Conv2d(in_ch, out_ch, kernel_size=3, stride=1, padding=1)]
+            if batch_norm:
+                layers.append(nn.BatchNorm2d(out_ch))
+            layers.append(nn.ReLU())
+            layers.append(nn.Conv2d(out_ch, out_ch, kernel_size=3, stride=1, padding=1))
+            if batch_norm:
+                layers.append(nn.BatchNorm2d(out_ch))
+            layers.append(nn.ReLU())
+            layers.append(nn.MaxPool2d(kernel_size=2, stride=2))
+            return nn.Sequential(*layers)
 
+        self.conv_block1 = conv_block(input_shape, hidden_units)
+        self.conv_block2 = conv_block(hidden_units, hidden_units)
         self.classifier = nn.Sequential(
-            nn.Flatten(),
-            nn.LazyLinear(out_features=output_shape),
+            nn.Flatten(), nn.LazyLinear(out_features=output_shape)
         )
 
     def forward(self, X):

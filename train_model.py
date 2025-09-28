@@ -29,6 +29,8 @@ def train_model(config_path: str):
     augmentation = config["training"]["augmentation"]
     epochs = config["training"]["epochs"]
     patience = config["training"]["patience"]
+    augmentation = config["training"]["augmentation"]
+    batch_norm = config["training"]["batch_norm"]
 
     # DATA LOADING
     NUM_WORKERS = 2  # 0 if run on jupyter else increase
@@ -38,6 +40,7 @@ def train_model(config_path: str):
     print("Loading data")
     train_loader, validation_loader = load_cifar10(
         train=True,
+        augmentation=augmentation,
         validation_split=0.2,
         return_loader=True,
         batch_size=batch_size,
@@ -49,9 +52,9 @@ def train_model(config_path: str):
     val_len = len(validation_loader.dataset)
 
     # TRAINING SET UP
-    model = TinyVGG(hidden_units=hidden_units, input_shape=3, output_shape=10).to(
-        device
-    )
+    model = TinyVGG(
+        hidden_units=hidden_units, input_shape=3, output_shape=10, batch_norm=batch_norm
+    ).to(device)
     loss_fn = nn.CrossEntropyLoss(reduction="sum")
     opt = optim.Adam(params=model.parameters(), lr=learning_rate)
     accuracy_metric = Accuracy(task="multiclass", num_classes=len(classes)).to(device)
@@ -74,7 +77,8 @@ def train_model(config_path: str):
         "device": device,
         "learning_rate": learning_rate,
         "batch_size": batch_size,
-        "augmentations": augmentation,
+        "augmentation": augmentation,
+        "batch_norm": batch_norm,
         "train_loss": [],
         "train_accuracy": [],
         "val_loss": [],
@@ -105,14 +109,6 @@ def train_model(config_path: str):
         model_metrics["val_loss"].append(val_loss / val_len)
         model_metrics["val_accuracy"].append(val_accuracy)
 
-        # At the end of training keep track of training time
-        if epoch == epochs - 1 or patience_counter >= patience:
-            model_metrics["epochs"] = epoch + 1
-            model_metrics["train_time"] = time() - start_time
-            print(
-                f"Training time on {device}: {model_metrics['train_time']:.2f} seconds"
-            )
-
         # Training and Validation metrics for the current epoch
         print(f"\nEpoch {epoch + 1}/{epochs}")
         print(f"Train Loss: {train_loss / train_len:.5f},\tACC: {train_accuracy:.2f}")
@@ -128,13 +124,13 @@ def train_model(config_path: str):
             patience_counter = 0
 
             # Save the best model thus far
-            best_model_metrics = {
-                "epoch": epoch + 1,
-                "train_loss": train_loss / train_len,
-                "train_accuracy": train_accuracy,
-                "val_loss": val_loss / val_len,
-                "val_accuracy": val_accuracy,
-            }
+            best_model_metrics["epoch"] = epoch + 1
+            best_model_metrics["train_loss"] = train_loss / train_len
+            best_model_metrics["train_accuracy"] = train_accuracy
+            best_model_metrics["val_loss"] = val_loss / val_len
+            best_model_metrics["val_accuracy"] = val_accuracy
+            best_model_metrics["train_time"] = time() - start_time
+
             _save_model(f"{model_save_path}_best.pth")
             _save_model_metrics(
                 best_model_metrics, f"{metrics_filename_base}_{run_id}_best.json"
@@ -147,6 +143,11 @@ def train_model(config_path: str):
                 _save_model(f"{model_save_path}_last.pth")
                 break
 
+    # At the end of training keep track of training time
+    model_metrics["epochs"] = epoch + 1
+    model_metrics["train_time"] = time() - start_time
+    _save_model_metrics(model_metrics, f"{metrics_filename_base}_{run_id}_last.json")
+    print(f"Training time on {device}: {model_metrics['train_time']:.2f} seconds")
     if (
         patience_counter < patience
     ):  # Save the model if not already saved by early stopping

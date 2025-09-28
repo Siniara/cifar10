@@ -7,6 +7,7 @@ from torchvision.datasets import CIFAR10
 
 def load_cifar10(
     train: bool,
+    augmentation: bool = False,
     validation_split: float = 0.0,
     batch_size: int = 32,
     num_workers: int = 2,
@@ -16,7 +17,7 @@ def load_cifar10(
     Load the CIFAR-10 dataset. Can return either DataLoader objects or raw datasets for data exploration.
 
     Returns:
-    - If train=True: (trainset, evalset) → trainset for training, evalset for validation or test
+    - If train=True: (trainset, evalset) → trainset for training, evalset for validation or test.
     - If train=False: evalset only → the official test set
     - If return_loader=True, returns DataLoader objects instead of datasets.
     """
@@ -28,7 +29,23 @@ def load_cifar10(
 
     transform_list = [transforms.ToTensor()]
     if return_loader:
-        transform_list.append(transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)))
+        # practical for smaller models
+        meanR, meanG, meanB = 0.5, 0.5, 0.5
+        stdR, stdG, stdB = 0.5, 0.5, 0.5
+        # from data exploration - theoretically better
+        # meanR, meanG, meanB = 0.4914, 0.4822, 0.4465
+        # stdR, stdG, stdB = 0.2023, 0.1994, 0.2010
+        transform_list.append(
+            transforms.Normalize((meanR, meanG, meanB), (stdR, stdG, stdB))
+        )
+    if augmentation and train:
+        transform_list.extend(
+            [
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomCrop(32, padding=4),
+            ]  # TODO: readme standard for CIFAR [https://arxiv.org/abs/1512.03385], https://github.com/DeepVoltaire/AutoAugment, https://huggingface.co/jaeunglee/resnet18-cifar10-unlearning
+        )
+
     transform = transforms.Compose(transform_list)
 
     if not train:

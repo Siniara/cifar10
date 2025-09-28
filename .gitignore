@@ -1,5 +1,6 @@
 __pycache__
-checkpoints/
-data/
-metrics/
+*.pth
+data/*
+metrics/*
+!.gitkeep
 wip.ipynb
