@@ -1,11 +1,11 @@
 model:
   name: TinyVGG
   hidden_units: 64
+  batch_norm: False
+  dropout: 0
 training:
   epochs: 20
   batch_size: 32
   learning_rate: 0.001
   patience: 5
   augmentation: False
-  batch_norm: False
-  dropout: 0

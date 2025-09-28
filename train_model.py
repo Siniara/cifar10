@@ -23,15 +23,15 @@ def train_model(config_path: str):
         config = yaml.safe_load(f)
 
     # 2. Use values from config
+    model_name = config["model"]["name"]
     hidden_units = config["model"]["hidden_units"]
+    batch_norm = config["model"]["batch_norm"]
+    dropout = config["model"]["dropout"]
+    epochs = config["training"]["epochs"]
     batch_size = config["training"]["batch_size"]
     learning_rate = config["training"]["learning_rate"]
-    augmentation = config["training"]["augmentation"]
-    epochs = config["training"]["epochs"]
     patience = config["training"]["patience"]
     augmentation = config["training"]["augmentation"]
-    batch_norm = config["training"]["batch_norm"]
-    dropout = config["training"]["dropout"]
 
     # DATA LOADING
     NUM_WORKERS = 2  # 0 if run on jupyter else increase
@@ -64,12 +64,11 @@ def train_model(config_path: str):
     opt = optim.Adam(params=model.parameters(), lr=learning_rate)
     accuracy_metric = Accuracy(task="multiclass", num_classes=len(classes)).to(device)
 
-    MODEL_NAME = model.__class__.__name__
     MODEL_SAVE_ROOT = "checkpoints"
     MODEL_METRICS_ROOT = "metrics"
 
-    model_filename_base = f"{MODEL_SAVE_ROOT}/{MODEL_NAME}_{run}"
-    metrics_filename_base = f"{MODEL_METRICS_ROOT}/{MODEL_NAME}_{run}"
+    model_filename_base = f"{MODEL_SAVE_ROOT}/{model_name}_{run}"
+    metrics_filename_base = f"{MODEL_METRICS_ROOT}/{model_name}_{run}"
     run_id = datetime.now().strftime("%m%d%H%M")
     model_save_path = f"{model_filename_base}_{run_id}"
 
@@ -78,7 +77,7 @@ def train_model(config_path: str):
 
     # TRAINING
     model_metrics = {
-        "model": MODEL_NAME,
+        "model": model_name,
         "device": device,
         "learning_rate": learning_rate,
         "batch_size": batch_size,
@@ -99,7 +98,7 @@ def train_model(config_path: str):
     def _save_model(path: str):
         torch.save(model.state_dict(), path)
 
-    print("Training model:", MODEL_NAME)
+    print("Training model:", model_name)
     start_time = time()
     for epoch in range(epochs):
         train_loss, train_accuracy = train_epoch(
