@@ -7,6 +7,7 @@ from torchvision.datasets import CIFAR10
 
 def load_cifar10(
     train: bool,
+    raw: bool = False,
     augmentation: bool = False,
     validation_split: float = 0.0,
     batch_size: int = 32,
@@ -28,6 +29,7 @@ def load_cifar10(
         )
 
     transform_list = [transforms.ToTensor()]
+
     if return_loader:
         # practical for smaller models
         meanR, meanG, meanB = 0.5, 0.5, 0.5
@@ -48,13 +50,13 @@ def load_cifar10(
 
     transform = transforms.Compose(transform_list)
 
-    if not train:
-        evalset = CIFAR10(
-            root="./data", train=False, download=True, transform=transform
+    if raw:
+        trainset = CIFAR10(
+            root="./data", train=train, download=True, transform=transform
         )
-        return _make_loader(evalset) if return_loader else evalset
+        return _make_loader(trainset) if return_loader else trainset
 
-    else:
+    if train:
         trainset = CIFAR10(
             root="./data", train=train, download=True, transform=transform
         )
@@ -78,3 +80,8 @@ def load_cifar10(
             if return_loader
             else (trainset, evalset)
         )
+    else:
+        evalset = CIFAR10(
+            root="./data", train=False, download=True, transform=transform
+        )
+        return _make_loader(evalset) if return_loader else evalset
