@@ -10,6 +10,7 @@ In both cases the best model (lowest validation loss) and the last model (early 
 import argparse
 import copy
 import json
+import os
 from datetime import datetime
 from time import time
 
@@ -26,7 +27,8 @@ torch.manual_seed(42)  # set random seed for reproducibility
 
 def train_model(config_path: str):
     print(f"Loading config: {config_path}")
-    run = config_path.split("\\")[-1].split(".")[0]
+    # run = config_path.split("\\")[-1].split(".")[0]
+    run = os.path.splitext(os.path.basename(config_path))[0]
     # 1. Load YAML config
     with open(config_path, "r") as f:
         config = yaml.safe_load(f)
