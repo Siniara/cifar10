@@ -83,7 +83,7 @@ The env used for developing this project was managed by Conda and is provided in
 Instructions for Colab:
 - clone the repo
 - Install `torchmetrics`. In a code cell: `!pip install torchmetrics`
-- Set the repo as root, so that the imports work: in a code cell: `%cd /content/cifar10`
+- Set the repo as root, so that the imports work. In a code cell: `%cd /content/cifar10`
 
 ## Workflow
 - Define your run/experiment. Use the provided `.yaml` configuration files for reference.
