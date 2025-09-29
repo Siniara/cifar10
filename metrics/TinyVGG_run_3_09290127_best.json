@@ -1,0 +1,15 @@
+{
+    "model": "TinyVGG",
+    "device": "cuda",
+    "learning_rate": 0.001,
+    "batch_size": 64,
+    "augmentation": true,
+    "batch_norm": true,
+    "dropout": 0,
+    "train_loss": 0.4511431345462799,
+    "train_accuracy": 0.8428500294685364,
+    "val_loss": 0.5656375532627106,
+    "val_accuracy": 0.8075000047683716,
+    "epoch": 20,
+    "train_time": 671.1148295402527
+}

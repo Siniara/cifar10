@@ -3,3 +3,13 @@ __pycache__
 data/*
 metrics/*
 !.gitkeep
+
+# Original experiments for reference
+!TinyVGG_run_1_09290103_best.json
+!TinyVGG_run_1_09290103_last.json
+!TinyVGG_run_2_09290110_best.json
+!TinyVGG_run_2_09290110_last.json
+!TinyVGG_run_3_09290127_best.json
+!TinyVGG_run_3_09290127_last.json
+!TinyVGG_run_4_09290140_best.json
+!TinyVGG_run_4_09290140_last.json
