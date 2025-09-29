@@ -13,7 +13,9 @@ def load_all_metrics(metrics_dir, pattern="*_last.json"):
     for f in metrics_dir.glob(pattern):
         with open(f, "r") as file:
             data = json.load(file)
-            data["run_name"] = f.stem
+            # data["run_name"] = f.stem
+            # strip "_last" from the filename for cleaner run name
+            data["run_name"] = f.stem.replace("_last", "")
             for key in ["train_loss", "val_loss", "train_accuracy", "val_accuracy"]:
                 if isinstance(data.get(key), (int, float)):
                     data[key] = [data[key]]
@@ -45,7 +47,8 @@ def plot_metrics_grid(all_metrics):
         rows=2, cols=1, shared_xaxes=True, subplot_titles=("Loss", "Accuracy")
     )
 
-    trace_info = []  # store run_name and curve_type for each trace
+    trace_info = []  # store run_name, metric, and curve_type for each trace
+
     for m in all_metrics:
         base_color = color_map[m["run_name"]]
         train_color = base_color
@@ -56,55 +59,55 @@ def plot_metrics_grid(all_metrics):
             go.Scatter(
                 y=m["train_loss"],
                 mode="lines+markers",
-                name=f"{m['run_name']} - train",
+                name=f"{m['run_name']} - Loss - train",
                 line=dict(color=train_color),
             ),
             row=1,
             col=1,
         )
-        trace_info.append({"run": m["run_name"], "type": "train"})
+        trace_info.append({"run": m["run_name"], "metric": "Loss", "type": "train"})
 
         fig.add_trace(
             go.Scatter(
                 y=m["val_loss"],
                 mode="lines+markers",
-                name=f"{m['run_name']} - val",
+                name=f"{m['run_name']} - Loss - val",
                 line=dict(color=val_color, dash="dash"),
             ),
             row=1,
             col=1,
         )
-        trace_info.append({"run": m["run_name"], "type": "val"})
+        trace_info.append({"run": m["run_name"], "metric": "Loss", "type": "val"})
 
         # Accuracy curves
         fig.add_trace(
             go.Scatter(
                 y=m["train_accuracy"],
                 mode="lines+markers",
-                name=f"{m['run_name']} - train",
+                name=f"{m['run_name']} - Accuracy - train",
                 line=dict(color=train_color),
             ),
             row=2,
             col=1,
         )
-        trace_info.append({"run": m["run_name"], "type": "train"})
+        trace_info.append({"run": m["run_name"], "metric": "Accuracy", "type": "train"})
 
         fig.add_trace(
             go.Scatter(
                 y=m["val_accuracy"],
                 mode="lines+markers",
-                name=f"{m['run_name']} - val",
+                name=f"{m['run_name']} - Accuracy - val",
                 line=dict(color=val_color, dash="dash"),
             ),
             row=2,
             col=1,
         )
-        trace_info.append({"run": m["run_name"], "type": "val"})
+        trace_info.append({"run": m["run_name"], "metric": "Accuracy", "type": "val"})
 
     # Buttons for train/val visibility
     def get_visibility(train=True, val=True, selected_run=None):
         vis = []
-        for i, info in enumerate(trace_info):
+        for info in trace_info:
             run_match = selected_run is None or info["run"] == selected_run
             type_match = (info["type"] == "train" and train) or (
                 info["type"] == "val" and val
@@ -114,7 +117,9 @@ def plot_metrics_grid(all_metrics):
 
     buttons_train_val = [
         dict(
-            label="All", method="update", args=[{"visible": get_visibility(True, True)}]
+            label="All",
+            method="update",
+            args=[{"visible": get_visibility(True, True)}],
         ),
         dict(
             label="Train only",
@@ -128,16 +133,15 @@ def plot_metrics_grid(all_metrics):
         ),
     ]
 
-    buttons_runs = []
-    run_names = [m["run_name"] for m in all_metrics]
-    buttons_runs.append(
+    buttons_runs = [
         dict(
             label="All runs",
             method="update",
             args=[{"visible": get_visibility(True, True, None)}],
         )
-    )
-    for run_name in run_names:
+    ]
+
+    for run_name in [m["run_name"] for m in all_metrics]:
         buttons_runs.append(
             dict(
                 label=run_name,
@@ -175,7 +179,7 @@ def plot_metrics_grid(all_metrics):
         width=1000,
         title_text="Training Metrics Comparison Across Runs",
         showlegend=True,
-        margin=dict(r=200),  # give space on right for dropdowns
+        margin=dict(r=200),
     )
 
     fig.update_xaxes(title_text="Epoch", row=1, col=1)
