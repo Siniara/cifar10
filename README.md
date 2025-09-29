@@ -4,11 +4,11 @@
 ![TorchMetrics](https://img.shields.io/badge/torchmetrics-1.8.2-green)
 ![CUDA](https://img.shields.io/badge/CUDA-12.8-lightgrey)
 
-# Simple CNN for Cifar10
-TinyVGG-inspired CNN architecture for solving Cifar10. 
+# Simple CNN for CIFAR10
+TinyVGG-inspired CNN architecture for solving CIFAR10. 
 
 ## Design
-Baseline Model: TinyVGG with data normalisation and early stopping, trained in mini-batches with Adam optimizer ([run 1](run_config/run_1.yaml)). [Model code.](models/tiny_vgg.py). The dataset is balanced, so accuracy is used as primary training metric.
+Baseline Model: TinyVGG with data normalisation and early stopping, trained in mini-batches with Adam optimizer ([run 1](run_config/run_1.yaml)). [Model code](models/tiny_vgg.py). The dataset is balanced, so accuracy is used as primary training metric.
 
 Additional experiments:  
 - \+ Data augmentation ([run 2](run_config/run_2.yaml))  
@@ -22,7 +22,7 @@ See [Running Custom Experiments](#running-custom-experiments) for instructions t
 ### Validation
 Screenshot from the simple dashboard for run comparison in [compare_runs.ipynb](compare_runs.ipynb):
 [![compare_runs.png](images/compare_runs.png)](images/compare_runs.png)
-The experiment/run results are provided are provided in the `metrics` directory as `.json` files , and can be used to run the dashboard.
+The experiment/run results are provided in the `metrics` directory as `.json` files , and can be used to run the dashboard.
 
 Validation results of the best model for each run:
 
@@ -33,7 +33,7 @@ Validation results of the best model for each run:
 | Run 2 | 0.60       | 0.66     | 0.79           | 0.77         | 529.21         | 16     |
 | Run 1 | 0.54       | 0.77     | 0.81           | 0.74         | 148.32         | 5      |
 
-Based on these the model from Run 3 was chosen and evaluated on the test set. Note that Run 3 didn't trigger early stopping, so further training would likely be beneficial. Similarly, run 4 did end with early stopping (just barely), but since the dropout layers make learning more difficult, it might also benefit from longer training, perhaps with an adjusted learning rate. This could also prove not to be true since the TinyVGG architecture is quite simple meaning that dropout could just hinder it as it doesn't have enough capacity/parameters to overfit the data.
+Run 3 was chosen and evaluated on the test set being the most performant. Note that Run 3 didn't trigger early stopping, so further training would likely be beneficial. Similarly, run 4 did end with early stopping (just barely), but since the dropout layers make learning more difficult, it might also benefit from longer training, perhaps with an adjusted learning rate. This could also prove not to be true since the TinyVGG architecture is quite simple meaning that dropout could just hinder it as it doesn't have enough capacity/parameters to overfit the data.
 
 ### Test
 TinyVGG -- [experiment setup 3](run_config/run_3.yaml)
@@ -45,18 +45,21 @@ TinyVGG -- [experiment setup 3](run_config/run_3.yaml)
 | **Test**       | **0.83**    | **0.52**   |
 
 [![conf_matrix.png](images/conf_matrix.png)](images/conf_matrix.png)
-83% accuracy is decent performance for such a small model. The current state of the art is Giant AmoebaNet with GPipe 99% accuracy, so Cifar10 is essentially solved, but the model has a billion parameters ([Ref](https://github.com/RedditSota/state-of-the-art-result-for-machine-learning-problems)).
 
-The model does worst on (in order from worst):
+83% accuracy is decent for such a small model. The current state of the art is Giant AmoebaNet with GPipe, achieving 99% accuracy on CIFAR-10. So in practice, CIFAR-10 is essentially “solved.” However, that model has hundreds of millions of parameters, while this TinyVGG architecture has only around ~154k parameters. ([Ref](https://github.com/RedditSota/state-of-the-art-result-for-machine-learning-problems)).
+
+The model performs worst on (in order from worst):
 - cats – confused with dogs
 - airplanes – confused with birds and ships
 - horses – confused with dogs and deer
 - dogs – confused with cats
 
-The model gets most confused between cats and dogs, and it's understandable, as sometimes they do look quite a like:
+The model gets most confused between cats and dogs, and it's understandable, as sometimes they do look quite alike:
+
 [![catndog.png](images/catndog.png)](images/catndog.png)
 
-Also, sometimes there can be data quality issues, can you tell that this is a ship?
+Also, sometimes there can be data quality issues; can you tell that this is a ship?
+
 [![ship](images/ship.png)](images/ship.png)
 
 ## Improvements
