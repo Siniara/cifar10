@@ -56,6 +56,9 @@ The model does worst on (in order from worst):
 The model gets most confused between cats and dogs, and it's understandable, as sometimes they do look quite a like:
 [![catndog.png](images/catndog.png)](images/catndog.png)
 
+Also, sometimes there can be data quality issues, can you tell that this is a ship?
+[![ship](images/ship.png)](images/ship.png)
+
 ## Improvements
 Experiment more:
 - More epochs for the promising models with more regularisation
