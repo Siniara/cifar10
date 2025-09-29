@@ -16,13 +16,13 @@ Additional experiments:
 - \+ Dropout ([run 4](run_config/run_4.yaml))  
 
 Validation results are compared across runs, and the best model is selected for evaluation on the test set.
-
+See [Running Custom Experiments](#running-custom-experiments) for instructions to reproduce these results.
 
 ## Results
 ### Validation
 Screenshot from the simple dashboard for run comparison in [compare_runs.ipynb](compare_runs.ipynb):
 [![compare_runs.png](images/compare_runs.png)](images/compare_runs.png)
-The run result `.json` files are provided in the `metrics` directory, and can be used to run the dashboard.
+The experiment/run results are provided are provided in the `metrics` directory as `.json` files , and can be used to run the dashboard.
 
 Validation results of the best model for each run:
 
