@@ -1,13 +1,14 @@
 from torch import nn
 
+
 class TinyVGG(nn.Module):
     def __init__(
         self,
         hidden_units: int,
-        input_shape: int,
-        output_shape: int,
+        input_shape: int,  # number of channels
+        output_shape: int,  # number of classes
         batch_norm: bool = False,
-        dropout: float = 0.0,  # <-- optional dropout
+        dropout: float = 0.0,  # if 0.0, no dropout
     ):
         super().__init__()
         self.batch_norm = batch_norm
@@ -32,7 +33,7 @@ class TinyVGG(nn.Module):
         self.classifier = nn.Sequential(
             nn.Flatten(),
             nn.Dropout(dropout) if dropout > 0.0 else nn.Identity(),
-            nn.LazyLinear(out_features=output_shape)
+            nn.LazyLinear(out_features=output_shape),
         )
 
     def forward(self, X):
