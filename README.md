@@ -8,7 +8,7 @@
 TinyVGG-inspired CNN architecture for solving Cifar10. 
 
 ## Design
-Baseline Model: TinyVGG with data normalisation and early stopping, trained in mini-batches with Adam optimizer ([run 1](run_config/run_1.yaml)).
+Baseline Model: TinyVGG with data normalisation and early stopping, trained in mini-batches with Adam optimizer ([run 1](run_config/run_1.yaml)). [Model code.](models/tiny_vgg.py)
 
 Additional experiments:  
 - \+ Data augmentation ([run 2](run_config/run_2.yaml))  
@@ -44,7 +44,17 @@ TinyVGG -- [experiment setup 3](run_config/run_3.yaml)
 | Validation | 0.81    | 0.57   |
 | **Test**       | **0.83**    | **0.52**   |
 
-[![Confusion Matrix](images/conf_matrix.png)](images/conf_matrix.png)
+[![conf_matrix.png](images/conf_matrix.png)](images/conf_matrix.png)
+83% accuracy is decent performance for such a small model. The current state of the art is Giant AmoebaNet with GPipe 99% accuracy, so Cifar10 is essentially solved, but the model has a billion parameters ([Ref](https://github.com/RedditSota/state-of-the-art-result-for-machine-learning-problems)).
+
+The model does worst on (in order from worst):
+- cats – confused with dogs
+- airplanes – confused with birds and ships
+- horses – confused with dogs and deer
+- dogs – confused with cats
+
+The model gets most confused between cats and dogs, and it's understandable, as sometimes they do look quite a like:
+[![catndog.png](images/catndog.png)](images/catndog.png)
 
 ## Improvements
 Experiment more:
