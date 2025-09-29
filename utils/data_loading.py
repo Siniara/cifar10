@@ -1,4 +1,3 @@
-# load cifar 10 dataset from torch
 import torch
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader, Dataset
@@ -21,6 +20,42 @@ def load_cifar10(
     - If train=True: (trainset, evalset) → trainset for training, evalset for validation or test.
     - If train=False: evalset only → the official test set
     - If return_loader=True, returns DataLoader objects instead of datasets.
+
+    Load the CIFAR-10 dataset for training or evaluation.
+
+    Features:
+    - Returns either DataLoader objects (default) or raw Dataset objects.
+    - Supports train/validation split.
+    - Optional data augmentation for training.
+    - Normalizes images to [0,1] and standardizes to [-1, 1] with (mean/std of 0.5).
+
+    Parameters:
+    ----------
+    train : If True, load the training set (with optional validation split). If False, load the test set.
+    raw : If True, skips the train/test split logic and just returns the dataset. Useful for data exploration.
+    augmentation : If True and train=True, applies random horizontal flip and random crop.
+    validation_split : Fraction of training data to use as validation set (0 to 1). Only used if train=True.
+    batch_size : Number of samples per batch if returning DataLoaders.
+    num_workers : int, default=2 Number of worker processes for DataLoader. !Must be 0 for notebooks.!
+    return_loader : If True, returns DataLoader(s); if False, returns Dataset(s).
+
+    Returns:
+    -------
+    If train=True:
+        Tuple[DataLoader, DataLoader] or Tuple[Dataset, Dataset] → (train, validation/test)
+    If train=False:
+        DataLoader or Dataset → test set only
+
+    Example usage:
+    --------------
+    # Get training and validation loaders with augmentation
+    train_loader, val_loader = load_cifar10(train=True, augmentation=True, validation_split=0.1)
+
+    # Get raw training dataset without augmentation (useful for data exploration)
+    train_dataset = load_cifar10(train=True, raw=True, return_loader=False)
+
+    # Get test set loader
+    test_loader = load_cifar10(train=False)
     """
 
     def _make_loader(ds, shuffle=False):
