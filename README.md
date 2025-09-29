@@ -8,7 +8,7 @@
 TinyVGG-inspired CNN architecture for solving Cifar10. 
 
 ## Design
-Baseline Model: TinyVGG with data normalisation and early stopping, trained in mini-batches with Adam optimizer ([run 1](run_config/run_1.yaml)). [Model code.](models/tiny_vgg.py)
+Baseline Model: TinyVGG with data normalisation and early stopping, trained in mini-batches with Adam optimizer ([run 1](run_config/run_1.yaml)). [Model code.](models/tiny_vgg.py). The dataset is balanced, so accuracy is used as primary training metric.
 
 Additional experiments:  
 - \+ Data augmentation ([run 2](run_config/run_2.yaml))  
