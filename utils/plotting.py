@@ -1,5 +1,6 @@
+"""Plotting functions for compare_runs notebook."""
+
 import json
-from pathlib import Path
 
 import matplotlib.colors as mcolors
 import plotly.express as px

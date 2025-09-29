@@ -1,3 +1,12 @@
+"""Model training script for CIFAR-10 dataset using TinyVGG architecture. You need to provide a YAML conf file, see "run_configs" for examples.
+Run example:
+`python train_model.py --config run_configs/my_config.yaml`
+The script outputs:
+- Model checkpoints in the "checkpoints" folder
+- Training metrics in the "metrics" folder
+In both cases the best model (lowest validation loss) and the last model (early stopping or end of epochs) are saved.
+"""
+
 import argparse
 import copy
 import json
