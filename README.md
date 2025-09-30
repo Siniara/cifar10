@@ -64,15 +64,14 @@ Also, sometimes there can be data quality issues; can you tell that this is a sh
 
 ## Improvements
 Experiment more:
-- More epochs for the promising models with more regularisation
 - Hidden units
 - Learning rate
 - Batch size
 
 Implementation ideas:
+- Continued training from saved checkpoints of the most promising models.
 - Learning rate scheduling
 - Different optimisers
-- Continued training from saved checkpoints of the most promising models.
 - Other model architectures, e.g., miniResNet
 
 
