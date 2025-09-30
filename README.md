@@ -94,4 +94,4 @@ python train_model.py --config ./run_config/run_1.yaml
 - you can then compare multiple runs with `compare_runs.ipynb`, which will read the metrics from the `metrics` directory and plot the results.
 - choose the best model according to the validation score and evaluate it on the test set with `final_results.ipynb`.
 
-The data should be automatically downloaded when you run the training script if not present in the `data` folder. However, you can also use [utils/data_loading.py](utils/data_loading.py) if you wish to manually load the data for exploration or experimentation.
+The data should be automatically downloaded when you run the training script if not present in the `data` folder. You can also use [utils/data_loading.py](utils/data_loading.py) if you wish to manually load the data for exploration or experimentation. This is the module that the training script calls internally.
