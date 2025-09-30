@@ -46,7 +46,7 @@ TinyVGG -- [experiment setup 3](run_config/run_3.yaml)
 
 [![conf_matrix.png](images/conf_matrix.png)](images/conf_matrix.png)
 
-83% accuracy is decent for such a small model. The current state of the art is Giant AmoebaNet with GPipe, achieving 99% accuracy on CIFAR-10. So in practice, CIFAR-10 is essentially “solved.” However, that model has hundreds of millions of parameters, while this TinyVGG architecture has only around ~154k parameters. ([Ref](https://github.com/RedditSota/state-of-the-art-result-for-machine-learning-problems)).
+83% accuracy is decent for such a small model. The current state of the art is Giant AmoebaNet with GPipe, achieving 99% accuracy on CIFAR-10. So in practice, CIFAR-10 is essentially “solved”. However, that model has hundreds of millions of parameters, while this TinyVGG architecture has only around ~154k parameters. ([Ref](https://github.com/RedditSota/state-of-the-art-result-for-machine-learning-problems)).
 
 The model performs worst on (in order from worst):
 - cats – confused with dogs
